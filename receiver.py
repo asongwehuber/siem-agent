@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import re
+from database.heartbeat_db import update_heartbeat
 
 from security.verifier import verify_signature
 from normalization.formatter import normalize_log
@@ -201,6 +202,33 @@ def convert_to_siem_format(log):
 def receive_log():
 
     log = request.get_json()
+
+    # =========================
+    # HEARTBEAT HANDLER
+    # =========================
+
+    if log.get("type") == "heartbeat":
+
+        update_heartbeat(
+            generator_id=log["generator_id"],
+            hostname=log["hostname"]
+        )
+
+        print(
+            f"Heartbeat received from {log['hostname']}"
+        )
+
+        return jsonify(
+            {
+                "status": "heartbeat_received",
+                "generator_id": log["generator_id"],
+                "hostname": log["hostname"]
+            }
+        ), 200
+
+
+
+
 
     if not log:
 
