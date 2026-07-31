@@ -22,9 +22,15 @@ AGENT_PORT = int(
 )
 
 
-SIEM_ENDPOINT = os.getenv(
-    "SIEM_ENDPOINT",
+SIEM_LOG_ENDPOINT = os.getenv(
+    "SIEM_LOG_ENDPOINT",
     "http://127.0.0.1:5000/submit-log"
+)
+
+
+SIEM_HEARTBEAT_ENDPOINT = os.getenv(
+    "SIEM_HEARTBEAT_ENDPOINT",
+    "http://127.0.0.1:5000/submit-heartbeat"
 )
 
 
