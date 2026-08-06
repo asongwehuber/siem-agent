@@ -1,3 +1,4 @@
+import json
 import hashlib
 import hmac
 
@@ -14,6 +15,18 @@ def generate_signature(
     """
     Generate HMAC-SHA256 signature.
     """
+
+    if isinstance(message, dict):
+
+        message = json.dumps(
+
+            message,
+
+            sort_keys=True,
+
+            separators=(",", ":")
+
+        )
 
     data = (
         f"{timestamp}|"

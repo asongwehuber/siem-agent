@@ -23,14 +23,60 @@ class BaseParser:
 
         return "unknown"
 
-    def extract_ips(self, message):
+    def extract_ip(self, message):
 
-        return re.findall(
+        if isinstance(message, dict):
+
+            strings = message.get("strings", [])
+
+            for value in strings:
+
+                if not isinstance(value, str):
+                    continue
+
+                ips = re.findall(
+                    r"\b(?:\d{1,3}\.){3}\d{1,3}\b",
+                    value
+                )
+
+                if ips:
+                    return ips[0]
+
+            return "unknown"
+
+        ips = re.findall(
             r"\b(?:\d{1,3}\.){3}\d{1,3}\b",
             message
         )
 
+        if ips:
+            return ips[0]
+
+        return "unknown"
+
+    
+
     def extract_port(self, message):
+
+        if isinstance(message, dict):
+
+            strings = message.get("strings", [])
+
+            for value in strings:
+
+                if not isinstance(value, str):
+                    continue
+
+                match = re.search(
+                    r"(?:port\s+|:)(\d{2,5})",
+                    value,
+                    re.IGNORECASE
+                )
+
+                if match:
+                    return int(match.group(1))
+
+            return None
 
         port_match = re.search(
             r"(?:port\s+|:)(\d{2,5})",
@@ -42,6 +88,7 @@ class BaseParser:
             return int(port_match.group(1))
 
         return None
+    
 
     def extract_username(self, message):
 
@@ -150,28 +197,51 @@ class BaseParser:
     # =====================================================
     # Normalization
     # =====================================================
-
     def normalize(self, log):
 
         message = log["message"]
 
         normalized = self.default_fields()
 
-        normalized.update({
+        # ==========================================
+        # Structured log (dictionary)
+        # ==========================================
 
-            "source_ip": self.extract_ip(message),
+        if isinstance(message, dict):
 
-            "hostname": log["hostname"],
+            normalized.update({
 
-            "event_type": self.detect_event_type(message),
+                "hostname": log["hostname"],
 
-            "severity": self.detect_severity(message),
+                "event_type": self.detect_event_type(message),
 
-            "destination_port": self.extract_port(message),
+                "severity": self.detect_severity(message),
 
-            "message": message
+                "message": message
 
-        })
+            })
+
+        # ==========================================
+        # Traditional string log
+        # ==========================================
+
+        else:
+
+            normalized.update({
+
+                "source_ip": self.extract_ip(message),
+
+                "hostname": log["hostname"],
+
+                "event_type": self.detect_event_type(message),
+
+                "severity": self.detect_severity(message),
+
+                "destination_port": self.extract_port(message),
+
+                "message": message
+
+            })
 
         normalized.update(
             self.extract_additional_fields(log)
@@ -179,9 +249,9 @@ class BaseParser:
 
         return normalized
 
-    def extract_additional_fields(self, log):
 
-        return {}
+
+    
 
     # =====================================================
     # Validation Helpers

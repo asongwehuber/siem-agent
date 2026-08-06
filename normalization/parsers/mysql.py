@@ -3,6 +3,14 @@ from .base import BaseParser
 
 class MySQLParser(BaseParser):
 
+
+
+
+
+
+
+
+
     def detect_event_type(self, message):
 
         msg = message.lower()
@@ -74,6 +82,19 @@ class MySQLParser(BaseParser):
             return "service_stopped"
 
         return "database_event"
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     def detect_severity(self, message):
 
