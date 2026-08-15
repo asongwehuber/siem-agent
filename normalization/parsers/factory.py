@@ -3,6 +3,7 @@ from .windows import WindowsParser
 from .apache import ApacheParser
 from .firewall import FirewallParser
 from .mysql import MySQLParser
+from .router import RouterParser
 
 
 PARSERS = {
@@ -15,7 +16,9 @@ PARSERS = {
 
     "FIREWALL": FirewallParser(),
 
-    "MYSQL": MySQLParser()
+    "MYSQL": MySQLParser(),
+
+    "ROUTER": RouterParser()
 
 }
 
