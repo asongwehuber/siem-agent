@@ -19,6 +19,13 @@ from pipeline.processor import process_message
 
 app = Flask(__name__)
 
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({
+        "status": "ok",
+        "service": "siem-agent"
+    }), 200
+
 
 @app.route("/receive-log", methods=["POST"])
 def receive_log():

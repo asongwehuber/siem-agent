@@ -4,6 +4,7 @@ from .apache import ApacheParser
 from .firewall import FirewallParser
 from .mysql import MySQLParser
 from .router import RouterParser
+from .android import AndroidParser
 
 
 PARSERS = {
@@ -17,6 +18,7 @@ PARSERS = {
     "FIREWALL": FirewallParser(),
 
     "MYSQL": MySQLParser(),
+    "ANDROID": AndroidParser(),
 
     "ROUTER": RouterParser()
 

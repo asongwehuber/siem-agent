@@ -57,13 +57,22 @@ def validate_timestamp(timestamp):
             "seconds"
         )
 
-        if age < 0:
+        MAX_AGE = 300
+        MAX_FUTURE_SKEW = 10  # Allow up to 10 seconds ahead
 
-            print(
-                "[TIMESTAMP RESULT]: FUTURE TIMESTAMP"
-            )
+        age = (datetime.now() - log_time).total_seconds()
 
+        if age > MAX_AGE:
+            print("[TIMESTAMP RESULT]: EXPIRED TIMESTAMP")
             return False
+
+        if age < -MAX_FUTURE_SKEW:
+            print("[TIMESTAMP RESULT]: FUTURE TIMESTAMP")
+            return False
+
+        print("[TIMESTAMP RESULT]: VALID TIMESTAMP")
+        return True
+
 
         if age > MAX_LOG_AGE_SECONDS:
 
